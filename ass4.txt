@@ -5,7 +5,6 @@ mysql> create table old_roll(
     -> roll int(10) not null,
     -> name varchar(10) not null
     -> );
-ERROR 1046 (3D000): No database selected
 mysql> use student;
 Database changed
 mysql>  create table old_roll(
