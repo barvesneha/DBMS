@@ -1,0 +1,71 @@
+mysql> use student;
+Database changed
+mysql> create table marks (
+    -> rollno int(10) primary key,
+    -> sname varchar(20) not null,
+    -> total_marks int(10) not null
+    -> );
+Query OK, 0 rows affected, 2 warnings (0.03 sec)
+
+mysql> insert into marks values(1,'sneha',94);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into marks values(2,'shruti',98);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into marks values(3,'shubham',90);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into marks values(4,'payal',92);
+Query OK, 1 row affected (0.00 sec)
+mysql> select * from marks;
++--------+---------+-------------+
+| rollno | sname   | total_marks |
++--------+---------+-------------+
+|      1 | sneha   |          94 |
+|      2 | shruti  |          98 |
+|      3 | shubham |          90 |
+|      4 | payal   |          92 |
++--------+---------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> create table result (
+    -> rollno int references marks(rollno),
+    -> name varchar(20) not null,
+    -> marks int(10) not null
+    -> );
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> ALTER table result ADD Grade varchar(20);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> delimiter $$
+mysql> create procedure Grade_update(
+    -> IN roll int,
+    -> IN marks int
+    -> )
+    -> begin
+    -> declare student varchar(20);
+    -> declare EXIT HANDLER FOR SQLEXCEPTION SELECT 'ENTRY NOT FOUND' AS EXCEPTION;
+    -> IF NOT EXISTS(SELECT * from marks where rollno=roll and total_marks=marks) then
+    -> SIGNAL SQLSTATE '45000';
+    -> END IF;
+    -> select name into student
+    -> from marks
+    -> where rollno=roll and total_marks=marks;
+    -> IF marks >= 990 AND marks <= 1500 THEN
+    -> insert into result values(roll,student,marks,"distinction");
+    -> ELSEIF marks >=900 AND marks <=989 THEN
+    -> insert into result values(roll,student,marks,"first class");
+    -> ELSEIF marks >=825 AND marks <=899 THEN
+    -> insert into result values(roll,student,marks,"Higher second class");
+    -> ELSE
+    -> insert into result values(roll,student,marks,NULL);
+    -> END IF;
+    ->
+    -> SELECT 8 FROM result;
+    -> end $$
+Query OK, 0 rows affected (0.01 sec)
+mysql> delimiter ;
+mysql> call Grade_update(1,995);
+mysql> call Grade_update(2,900);
