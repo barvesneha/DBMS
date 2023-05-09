@@ -1,0 +1,307 @@
+mysql>create database admin;
+Query OK, 1 row affected (0.01 sec)
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| admin              |
+| customer           |
+| emp                |
+| information_schema |
+| mysql              |
+| oms                |
+| osm                |
+| performance_schema |
+| sneha              |
+| sys                |
++--------------------+
+10 rows in set (0.01 sec)
+
+mysql> use admin;
+Database changed
+mysql> create table customer(
+    -> cid int(10) primary key,
+    -> cname varchar(20) not null,
+    -> caddress char(10) not null,
+    -> cmobile int (10) not null
+    -> );
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+mysql> create table product(
+    -> pid int(10) primary key,
+    -> pname varchar(20) not null,
+    -> price int(10) not null
+    -> );
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+mysql> create table supplier (
+    -> sid int(10) primary key,
+    -> sname varchar(20) not null,
+    -> saddress char(10) not null
+    -> );
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+mysql> show tables;
++-----------------+
+| Tables_in_admin |
++-----------------+
+| customer        |
+| product         |
+| supplier        |
++-----------------+
+mysql> insert into customer values(1,'sneha','Rajur',987301942);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into customer values(2,'shruti','Akole',937301941);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into customer values(3,'pranjal','mumbai',892345673);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from customer;
++-----+---------+----------+-----------+
+| cid | cname   | caddress | cmobile   |
++-----+---------+----------+-----------+
+|   1 | sneha   | Rajur    | 987301942 |
+|   2 | shruti  | Akole    | 937301941 |
+|   3 | pranjal | mumbai   | 892345673 |
++-----+---------+----------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> insert into product values(4,'iphone',40000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into product values(5,'shine',60000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into product values(6,'Mango',2000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from product;
++-----+--------+-------+
+| pid | pname  | price |
++-----+--------+-------+
+|   4 | iphone | 40000 |
+|   5 | shine  | 60000 |
+|   6 | Mango  |  2000 |
++-----+--------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into supplier values(11,'swapnali','pune');
+mysql> insert into supplier values(12,'payal','panvel');
+mysql> insert into supplier values(13,'supriya','mulund');
+mysql> select * from supplier;
++-----+----------+----------+
+| sid | sname    | saddress |
++-----+----------+----------+
+|  11 | swapnali | pune     |
+|  12 | payal    | panvel   |
+|  13 | supriya  | mulund   |
++-----+----------+----------+
+mysql> update customer
+    -> set cname='pradnya',
+    -> caddress='rahuri'
+    -> where cid=1 ;
+
+mysql> select * from customer;
++-----+---------+----------+-----------+
+| cid | cname   | caddress | cmobile   |
++-----+---------+----------+-----------+
+|   1 | pradnya | rahuri   | 987301942 |
+|   2 | shruti  | Akole    | 937301941 |
+|   3 | pranjal | mumbai   | 892345673 |
++-----+---------+----------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> update product
+    -> set pname='Apple'
+    -> where pid=6;
+mysql> select * from product;
++-----+--------+-------+
+| pid | pname  | price |
++-----+--------+-------+
+|   4 | iphone | 40000 |
+|   5 | shine  | 60000 |
+|   6 | Apple  |  2000 |
++-----+--------+-------+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE customer MODIFY cname varchar(30);
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from customer;
++-----+---------+----------+-----------+
+| cid | cname   | caddress | cmobile   |
++-----+---------+----------+-----------+
+|   1 | pradnya | rahuri   | 987301942 |
+|   2 | shruti  | Akole    | 937301941 |
+|   3 | pranjal | mumbai   | 892345673 |
++-----+---------+----------+-----------+mysql> select * from product;
++-----+--------+-------+----------+
+| pid | pname  | price | mobileno |
++-----+--------+-------+----------+
+|   4 | iphone | 40000 |     NULL |
+|   5 | shine  | 60000 |     NULL |
+|   6 | Apple  |  2000 |     NULL |
++-----+--------+-------+----------+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE product drop mobileno ;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from product;
++-----+--------+-------+
+| pid | pname  | price |
++-----+--------+-------+
+|   4 | iphone | 40000 |
+|   5 | shine  | 60000 |
+|   6 | Apple  |  2000 |
++-----+--------+-------+
+3 rows in set (0.00 sec)
+
+mysql> drop database customer;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| admin              |
+| emp                |
+| information_schema |
+| mysql              |
+| oms                |
+| osm                |
+| performance_schema |
+| sneha              |
+| sys                |
++--------------------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT cname from customer
+    -> WHERE cid=ALL(SELECT pname from product WHERE pname='iphone');
+Empty set, 3 warnings (0.00 sec)
+
+mysql> SELECT * from customer
+    -> WHERE cid=1 AND caddress='Rajur';
+Empty set (0.00 sec)
+
+mysql> select * from customer;
++-----+---------+----------+-----------+
+| cid | cname   | caddress | cmobile   |
++-----+---------+----------+-----------+
+|   1 | pradnya | rahuri   | 987301942 |
+|   2 | shruti  | Akole    | 937301941 |
+|   3 | pranjal | mumbai   | 892345673 |
++-----+---------+----------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> select cname from customer;
++---------+
+| cname   |
++---------+
+| pradnya |
+| shruti  |
+| pranjal |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> select pid ,pname from product;
++-----+--------+
+| pid | pname  |
++-----+--------+
+|   4 | iphone |
+|   5 | shine  |
+|   6 | Apple  |
++-----+--------+
+3 rows in set (0.00 sec)
+
+mysql> select sid from supplier where sname='payal';
++-----+
+| sid |
++-----+
+|  12 |
++-----+
+1 row in set (0.00 sec)
+
+mysql> select min(price) from product;
++------------+
+| min(price) |
++------------+
+|       2000 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from customer;
++----------+
+| count(*) |
++----------+
+|        3 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from product;
++----------+
+| count(*) |
++----------+
+|        3 |
++----------+
+mysql> create view cust_view as select cname,caddress,cmobile from customer where customer.cid=2;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show tables;
++-----------------+
+| Tables_in_admin |
++-----------------+
+| cust_view       |
+| customer        |
+| product         |
+| supplier        |
++-----------------+
+4 rows in set (0.00 sec)
+
+mysql> desc cust_view;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| cname    | varchar(30) | YES  |     | NULL    |       |
+| caddress | char(10)    | NO   |     | NULL    |       |
+| cmobile  | int         | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+mysql> select cname from customer cross join supplier;
++---------+
+| cname   |
++---------+
+| pranjal |
+| shruti  |
+| pradnya |
+| pranjal |
+| shruti  |
+| pradnya |
+| pranjal |
+| shruti  |
+| pradnya |
++---------+
+9 rows in set (0.00 sec)
+
+mysql> create table custom(
+    -> pid int(10),
+    -> sid int(10),
+    -> cname varchar(20),
+    -> foreign key(pid) references product(pid),
+    -> foreign key(sid) references supplier(sid)
+    -> );
+Query OK, 0 rows affected, 2 warnings (0.03 sec)
+
+mysql> desc custom;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| pid   | int         | YES  | MUL | NULL    |       |
+| sid   | int         | YES  | MUL | NULL    |       |
+| cname | varchar(20) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
