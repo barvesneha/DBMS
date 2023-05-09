@@ -1,0 +1,98 @@
+mysql> create database student;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> create table old_roll(
+    -> roll int(10) not null,
+    -> name varchar(10) not null
+    -> );
+ERROR 1046 (3D000): No database selected
+mysql> use student;
+Database changed
+mysql>  create table old_roll(
+    -> roll int(10) not null,
+    ->  name varchar(10) not null
+    -> );
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> insert into old_roll values(1,'sneha');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into old_roll values(2,'shruti');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into old_roll values(3,'pranjal');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into old_roll values(4,'payal');
+Query OK, 1 row affected (0.00 sec)
+mysql> select * from old_roll;
++------+---------+
+| roll | name    |
++------+---------+
+|    1 | sneha   |
+|    2 | shruti  |
+|    3 | pranjal |
+|    4 | payal   |
++------+---------+
+4 rows in set (0.00 sec)
+
+mysql> create table new_roll(
+    -> roll int(10) not null,
+    -> name varchar(10) not null
+    -> );
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> insert into new_roll values(4,'pradnya');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into new_roll values(5,'Rani');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into new_roll values(6,'swapnil');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into new_roll values(7,'vaibhav');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from new_roll;
++------+---------+
+| roll | name    |
++------+---------+
+|    4 | pradnya |
+|    5 | Rani    |
+|    6 | swapnil |
+|    7 | vaibhav |
++------+---------+
+4 rows in set (0.00 sec)
+mysql> delimiter $$
+mysql> create procedure rollno_list()
+    -> begin
+    -> declare oldrollno int;
+    -> declare oldname varchar(20);
+    -> declare newrollno int(10);
+    -> declare newname varchar(20);
+    -> declare done int default false;
+    -> declare s1 cursor for select roll,name from old_roll;
+    -> declare s2 cursor for select roll,name from new_roll;
+    -> declare continue handler for not found set done=true;
+    -> open s1;
+    -> loop1:loop
+    -> fetch s1 into oldrollno,oldname;
+    -> if done then
+    -> leave loop1;
+    -> end if;
+    -> open s2;
+    ->
+    -> loop2:loop
+    -> fetch s2 into newrollno,newname;
+    -> if done then
+    -> insert into new_roll values(oldrollno,oldname);
+    -> set done=false;
+    -> close s2;
+    -> leave loop2;
+    -> end if;
+    -> end loop;
+    -> end loop;
+    -> close s1;
+    -> end $$
+Query OK, 0 rows affected, 1 warning (0.01 sec)
