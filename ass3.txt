@@ -1,0 +1,115 @@
+mysql> create database Library;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use Library;
+Database changed
+mysql> show tables;
+Empty set (0.00 sec)
+
+mysql> create table borrower(
+    -> roll no int(10) primary key,
+    -> name varchar(10)  not null,
+    -> dateofissue date,
+    -> name varchar(20),
+    -> status varchar(20)
+    -> );
+
+mysql> create table borrower(
+    -> rollno int(10) primary key,
+    -> name varchar(10) not null,
+    -> dateofissue date,
+    -> bookname varchar(20) not null,
+    -> status varchar(10) not null
+    -> );
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> select * from borrower;
+Empty set (0.00 sec)
+
+mysql> desc borrower;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| rollno      | int         | NO   | PRI | NULL    |       |
+| name        | varchar(10) | NO   |     | NULL    |       |
+| dateofissue | date        | YES  |     | NULL    |       |
+| bookname    | varchar(20) | NO   |     | NULL    |       |
+| status      | varchar(10) | NO   |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> create table fine(
+    -> rollno int(10) primary key,
+    -> foreign key(rollno) references borrower(rollno),
+    -> returndate date,
+    -> amount int(10) not null
+    -> );
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+mysql> desc fine;
++------------+------+------+-----+---------+-------+
+| Field      | Type | Null | Key | Default | Extra |
++------------+------+------+-----+---------+-------+
+| rollno     | int  | NO   | PRI | NULL    |       |
+| returndate | date | YES  |     | NULL    |       |
+| amount     | int  | NO   |     | NULL    |       |
++------------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into borrower values(1,'sneha','2023-05-06','DEDC','I');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into borrower values(2,'shruti','2023-04-08','oop','I');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into borrower values(3,'payal','2023-02-01','ads','I');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from borrower;
++--------+--------+-------------+----------+--------+
+| rollno | name   | dateofissue | bookname | status |
++--------+--------+-------------+----------+--------+
+|      1 | sneha  | 2023-05-06  | DEDC     | I      |
+|      2 | shruti | 2023-04-08  | oop      | I      |
+|      3 | payal  | 2023-02-01  | ads      | I      |
++--------+--------+-------------+----------+--------+
+3 rows in set (0.00 sec)
+mysql> delimiter $
+mysql> create procedure calc_fine_lib(in roll int)
+    -> begin
+    -> declare fine1 int;
+    -> declare noofdays int;
+    -> declare issuedate date;
+    -> declare exit handler for SQLEXCEPTION select 'create table definition';
+    -> select dateofissue into issuedate from borrower where rollno=roll;
+    -> select datediff(curdate(),issuedate) into noofdays;
+    -> if noofdays>15 and noofdays<=30 then
+    -> set fine1=((noofdays-30)*50) + 30*5;
+    -> insert into fine values(roll,curdate(),fine1);
+    -> else
+    -> insert into fine values(roll,curdate(),0);
+    -> end if;
+    -> update borrower set status='R' where rollno=roll;
+    -> end $
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call fine_library(1);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> call fine_library(2);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> call fine_library(3);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from fine;
++--------+------------+--------+
+| rollno | returndate | amount |
++--------+------------+--------+
+|      1 | 2023-05-08 |      200 |
+|      2 | 2023-05-08 |      300 |
+|      3 | 2023-05-08 |      400|
++--------+------------+--------+
+3 rows in set (0.00 sec)
+
