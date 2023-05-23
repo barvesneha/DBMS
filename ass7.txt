@@ -1,0 +1,90 @@
+use mycollection;
+switched to db mycollection
+db.mycollection.insert({name:"sneha",id:4,age:17,phone:34546678})
+db.mycollection.insert({name:"shruti",id:5,age:12,phone:56789234})
+db.mycollection.insert({name:"sneha",id:6,age:14,phone:93730194})
+
+db.mycollection.find().pretty();
+{
+	"_id" : ObjectId("6464aa00517fb98e4cf20fee"),
+	"name" : "sneha",
+	"id" : 4,
+	"age" : 17,
+	"phone" : 34546678
+}
+{
+	"_id" : ObjectId("6464aa5c517fb98e4cf20fef"),
+	"name" : "shruti",
+	"id" : 5,
+	"age" : 12,
+	"phone" : 56789234
+}
+{
+	"_id" : ObjectId("6464aa5c517fb98e4cf20fef"),
+	"name" : "payal",
+	"id" : 6,
+	"age" : 14,
+	"phone" : 93730194
+}
+db.mycollection.find({name:"sneha"});
+{ "_id" : ObjectId("6464aa00517fb98e4cf20fee"), "name" : "sneha", "id" : 4, "age" : 17, "phone" : 34546678 }
+db.mycollection.find({name:"payal"}).pretty();
+{
+	"_id" : ObjectId("6464aa5c517fb98e4cf20fef"),
+	"name" : "payal",
+	"id" : 6,
+	"age" : 14,
+	"phone" : 93730194
+}
+> db.mycollection.update({id:5},{$set:{name:"shruti"}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.mycollection.find({id:5}).pretty();
+{
+	"_id" : ObjectId("6464aa5c517fb98e4cf20fef"),
+	"name" : "shruti",
+	"id" : 5,
+	"age" : 12,
+	"phone" : 56789234
+}
+db.mycollection.update({id:6},{$set:{name:"shinchan"}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.mycollection.find().pretty();
+{
+	"_id" : ObjectId("6464aa00517fb98e4cf20fee"),
+	"name" : "sneha",
+	"id" : 4,
+	"age" : 17,
+	"phone" : 34546678
+}
+{
+	"_id" : ObjectId("6464aa5c517fb98e4cf20fef"),
+	"name" : "shruti",
+	"id" : 5,
+	"age" : 12,
+	"phone" : 56789234
+}
+{
+	"_id" : ObjectId("6464b0f9c41d64e21617cde3"),
+	"name" : "shinchan",
+	"id" : 6,
+	"age" : 15,
+	"phone" : 12345677
+}
+b.mycollection.remove({id:6});
+WriteResult({ "nRemoved" : 1 })
+db.mycollection.find().pretty();
+{
+	"_id" : ObjectId("6464aa00517fb98e4cf20fee"),
+	"name" : "sneha",
+	"id" : 4,
+	"age" : 17,
+	"phone" : 34546678
+}
+{
+	"_id" : ObjectId("6464aa5c517fb98e4cf20fef"),
+	"name" : "shruti",
+	"id" : 5,
+	"age" : 12,
+	"phone" : 56789234
+}
+
